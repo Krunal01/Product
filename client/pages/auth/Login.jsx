@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../redux/apis/authApi";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setLoginDetails } from "../../redux/slices/authSlice";
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [login] = useLoginMutation();
   const formik = useFormik({
     initialValues: {
@@ -20,15 +23,21 @@ const Login = () => {
       password: yup.string().required("password is required"),
     }),
     onSubmit: async (values) => {
-      console.log(values);
       try {
         const response = await login(values).unwrap();
-        console.log(response);
-        // localStorage.setItem("token", JSON.stringify(action.payload.token));
-        // localStorage.setItem("user", JSON.stringify(action.payload.data));
+        if (response?.status && response?.statusCode === 200) {
+          localStorage.setItem("user", JSON.stringify(response?.data));
+          localStorage.setItem("token", JSON.stringify(response?.token));
+          dispatch(
+            setLoginDetails({ data: response?.data, token: response?.token }),
+          );
+          navigate("/");
+        }
       } catch (error) {
+        console.log(error);
         toast.error(
-          error?.error ||
+          error?.data?.message ||
+            error?.error ||
             error?.message ||
             error?.response?.message ||
             "some error occured",
@@ -38,6 +47,13 @@ const Login = () => {
       }
     },
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="flex justify-center">

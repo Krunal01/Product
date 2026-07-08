@@ -36,12 +36,14 @@ const Register = () => {
     onSubmit: async (values) => {
       try {
         const response = await register(values).unwrap();
-        console.log(response);
-        // navigate("/login");
-        toast.success("registered successfully");
+        if (response?.status && response?.statusCode === 201) {
+          toast.success("registered successfully");
+          navigate("/login");
+        }
       } catch (error) {
         toast.error(
-          error?.error ||
+          error?.data?.message ||
+            error?.error ||
             error?.message ||
             error?.response?.message ||
             "some error occured",
