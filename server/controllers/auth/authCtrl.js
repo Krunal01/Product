@@ -32,7 +32,11 @@ const login = async (req, res) => {
       message: "Login Successfull",
     });
   } catch (error) {
-    errorResponse(res, 500, error?.error || error?.message || "Network Error");
+    return errorResponse(
+      res,
+      500,
+      error?.error || error?.message || "Network Error",
+    );
   }
 };
 const register = async (req, res) => {
@@ -60,5 +64,44 @@ const register = async (req, res) => {
     errorResponse(res, 500, error?.error || error?.message || "Network Error");
   }
 };
+const changePassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.user.email }).select(
+      "+password",
+    );
+    if (!user) {
+      return errorResponse(res, 404, "User not found");
+    }
+    if (req.body.currentPassword === req.body.newPassword) {
+      return errorResponse(
+        res,
+        409,
+        "New password should not be the same as current password",
+      );
+    }
+    const isMatched = await bcrypt.compare(
+      req.body.currentPassword,
+      user.password,
+    );
+    if (!isMatched) {
+      return errorResponse(res, 401, "current password is incorrect");
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(req.body.newPassword, salt);
+    user.password = hash;
+    await user.save();
+    return res.status(200).json({
+      message: "Password changed successfully",
+      status: true,
+      statusCode: 200,
+    });
+  } catch (error) {
+    return errorResponse(
+      res,
+      500,
+      error?.error || error?.message || "Network Error",
+    );
+  }
+};
 
-module.exports = { login, register };
+module.exports = { login, register, changePassword };
