@@ -6,6 +6,7 @@ import { useChangePasswordMutation } from "../../redux/apis/authApi";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { logout, setLoginDetails } from "../../redux/slices/authSlice";
+import { showError } from "../../utils/global";
 const ChangePassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -39,13 +40,7 @@ const ChangePassword = () => {
           navigate("/login");
         }
       } catch (error) {
-        toast.error(
-          error?.data?.message ||
-            error?.error ||
-            error?.message ||
-            error?.response?.message ||
-            "some error occured",
-        );
+        showError(error);
       }
     },
   });

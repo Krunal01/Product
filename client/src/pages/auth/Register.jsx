@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useRegisterMutation } from "../../redux/apis/authApi";
+import { showError } from "../../utils/global";
 const Register = () => {
   const navigate = useNavigate();
   const [register] = useRegisterMutation();
@@ -41,13 +42,7 @@ const Register = () => {
           navigate("/login");
         }
       } catch (error) {
-        toast.error(
-          error?.data?.message ||
-            error?.error ||
-            error?.message ||
-            error?.response?.message ||
-            "some error occured",
-        );
+        showError(error);
       }
     },
   });

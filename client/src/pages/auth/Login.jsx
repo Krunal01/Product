@@ -6,6 +6,7 @@ import { useLoginMutation } from "../../redux/apis/authApi";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setLoginDetails } from "../../redux/slices/authSlice";
+import { showError } from "../../utils/global";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,14 +35,7 @@ const Login = () => {
           navigate("/");
         }
       } catch (error) {
-        console.log(error);
-        toast.error(
-          error?.data?.message ||
-            error?.error ||
-            error?.message ||
-            error?.response?.message ||
-            "some error occured",
-        );
+        showError(error);
         localStorage.removeItem("token");
         localStorage.removeItem("user");
       }
@@ -107,7 +101,13 @@ const Login = () => {
               Login
             </button>
           </div>
-          <div>
+          <div className="flex justify-between items-center">
+            <p
+              onClick={() => navigate("/forgot-password")}
+              className="text-blue-400 text-right hover:underline cursor-pointer"
+            >
+              Forgot Password?
+            </p>
             <p
               onClick={() => navigate("/register")}
               className="text-blue-400 text-right hover:underline cursor-pointer"

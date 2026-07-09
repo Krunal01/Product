@@ -1,7 +1,9 @@
 const User = require("../../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { errorResponse } = require("../../utils/response");
+const { errorResponse, successResponse } = require("../../utils/response");
+const OTP = require("../../models/OTP");
+const sendMail = require("./sendMail");
 
 const login = async (req, res) => {
   try {
@@ -54,14 +56,13 @@ const register = async (req, res) => {
     const response = await User.create(newUser);
     const userObj = response.toObject();
     delete userObj.password;
-    return res.status(201).json({
-      message: "user registered successfully",
-      status: true,
-      statusCode: 201,
-      data: userObj,
-    });
+    return successResponse(res, 201, "user registered successfully", userObj);
   } catch (error) {
-    errorResponse(res, 500, error?.error || error?.message || "Network Error");
+    return errorResponse(
+      res,
+      500,
+      error?.error || error?.message || "Network Error",
+    );
   }
 };
 const changePassword = async (req, res) => {
@@ -90,11 +91,7 @@ const changePassword = async (req, res) => {
     const hash = await bcrypt.hash(req.body.newPassword, salt);
     user.password = hash;
     await user.save();
-    return res.status(200).json({
-      message: "Password changed successfully",
-      status: true,
-      statusCode: 200,
-    });
+    return successResponse(res, 200, "Password changed successfully");
   } catch (error) {
     return errorResponse(
       res,
@@ -103,5 +100,94 @@ const changePassword = async (req, res) => {
     );
   }
 };
+const forgotPassword = async (req, res) => {
+  try {
+    const result = await User.findOne({ email: req.body.email });
+    if (!result) {
+      return errorResponse(res, 404, "email not exist");
+    }
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-module.exports = { login, register, changePassword };
+    await OTP.deleteMany({ email: req.body.email });
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const result2 = await OTP.create({
+      email: req.body.email,
+      otp,
+      expiresAt,
+      verified: false,
+    });
+
+    const info = await sendMail(req.body.email, otp);
+
+    if (info.accepted.length === 0) {
+      return errorResponse(res, 500, "Failed to send OTP");
+    }
+    return successResponse(res, 200, "OTP sent successfully");
+  } catch (error) {
+    return errorResponse(res, 500, "internal server error");
+  }
+};
+const verifyOTP = async (req, res) => {
+  try {
+    const result = await OTP.findOne({
+      otp: req.body.otp,
+      email: req.body.email,
+    });
+    if (!result) {
+      return errorResponse(res, 404, "invalid otp");
+    }
+    if (result.expiresAt < new Date()) {
+      return errorResponse(res, 400, "OTP has expired");
+    }
+
+    result.verified = true;
+    await result.save();
+
+    return successResponse(res, 200, "OTP verified successfully");
+  } catch (error) {
+    return errorResponse(res, 500, "internal server error");
+  }
+};
+const resetPassword = async (req, res) => {
+  try {
+    const result = await OTP.findOne({
+      verified: true,
+      email: req.body.email,
+    });
+    if (!result) {
+      return errorResponse(res, 404, "OTP not verified");
+    }
+    if (result.expiresAt < new Date()) {
+      return errorResponse(res, 400, "OTP has expired");
+    }
+
+    const user = await User.findOne({ email: req.body.email }).select(
+      "+password",
+    );
+
+    if (!user) {
+      return errorResponse(res, 404, "User not found");
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(req.body.password, salt);
+
+    user.password = hash;
+    await user.save();
+
+    await OTP.deleteOne({ _id: result._id });
+
+    return successResponse(res, 200, "password reset successfully");
+  } catch (error) {
+    return errorResponse(res, 500, "internal server error");
+  }
+};
+
+module.exports = {
+  login,
+  register,
+  changePassword,
+  forgotPassword,
+  verifyOTP,
+  resetPassword,
+};
