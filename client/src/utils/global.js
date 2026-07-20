@@ -1,4 +1,6 @@
 import toast from "react-hot-toast";
+import store from "../redux/store";
+import { logout } from "../redux/slices/authSlice";
 
 export const showError = (error = "some error occured") => {
   console.log(error);
@@ -14,4 +16,11 @@ export const showError = (error = "some error occured") => {
       "Something went wrong";
     return toast.error(msg);
   }
+};
+
+export const handleLogout = () => {
+  store.dispatch(logout());
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.location.replace("/login");
 };
