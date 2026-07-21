@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { logout, setLoginDetails } from "../../redux/slices/authSlice";
 import { showError } from "../../utils/global";
+import { changePasswordValidationSchema } from "../validations/authValidations";
 const ChangePassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -16,19 +17,7 @@ const ChangePassword = () => {
       currentPassword: "",
       newPassword: "",
     },
-    validationSchema: yup.object().shape({
-      currentPassword: yup.string().required("current password is required"),
-      newPassword: yup
-        .string()
-        .required("new password is required")
-        .test(
-          "not-same",
-          "new password should not be same as current password",
-          function (value) {
-            return value !== this.parent.currentPassword;
-          },
-        ),
-    }),
+    validationSchema: changePasswordValidationSchema,
     onSubmit: async (values) => {
       try {
         const response = await changePassword(values).unwrap();

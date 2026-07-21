@@ -6,6 +6,7 @@ import { useVerifyOTPMutation } from "../../redux/apis/authApi";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { showError } from "../../utils/global";
+import { verifyOTPValidationSchema } from "../validations/authValidations";
 const VerifyOTP = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -14,9 +15,7 @@ const VerifyOTP = () => {
     initialValues: {
       otp: "",
     },
-    validationSchema: yup.object().shape({
-      otp: yup.string().required("email is required"),
-    }),
+    validationSchema: verifyOTPValidationSchema,
     onSubmit: async (values) => {
       try {
         const email = JSON.parse(localStorage.getItem("email"));

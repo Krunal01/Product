@@ -9,6 +9,7 @@ import {
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { showError } from "../../utils/global";
+import { resetPasswordValidationSchema } from "../validations/authValidations";
 const ResetPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -17,12 +18,7 @@ const ResetPassword = () => {
     initialValues: {
       password: "",
     },
-    validationSchema: yup.object().shape({
-      password: yup
-        .string()
-        .required("password is required")
-        .min(6, "passwords character minimum length should be 6 "),
-    }),
+    validationSchema: resetPasswordValidationSchema,
     onSubmit: async (values) => {
       try {
         const email = JSON.parse(localStorage.getItem("email"));

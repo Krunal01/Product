@@ -6,6 +6,7 @@ import { useForgotPasswordMutation } from "../../redux/apis/authApi";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { showError } from "../../utils/global";
+import { forgotPasswordValidationSchema } from "../validations/authValidations";
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -14,9 +15,7 @@ const ForgotPassword = () => {
     initialValues: {
       email: "",
     },
-    validationSchema: yup.object().shape({
-      email: yup.string().required("email is required"),
-    }),
+    validationSchema: forgotPasswordValidationSchema,
     onSubmit: async (values) => {
       try {
         const response = await forgotPassword(values).unwrap();

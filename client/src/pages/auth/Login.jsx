@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setLoginDetails } from "../../redux/slices/authSlice";
 import { showError } from "../../utils/global";
+import { loginValidationSchema } from "../validations/authValidations";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -16,13 +17,7 @@ const Login = () => {
       email: "",
       password: "",
     },
-    validationSchema: yup.object().shape({
-      email: yup
-        .string()
-        .required("email is required")
-        .email("email is invalid"),
-      password: yup.string().required("password is required"),
-    }),
+    validationSchema: loginValidationSchema,
     onSubmit: async (values) => {
       try {
         const response = await login(values).unwrap();

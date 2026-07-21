@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useRegisterMutation } from "../../redux/apis/authApi";
 import { showError } from "../../utils/global";
+import { registerValidationSchema } from "../validations/authValidations";
 const Register = () => {
   const navigate = useNavigate();
   const [register] = useRegisterMutation();
@@ -16,24 +17,7 @@ const Register = () => {
       gender: "",
       phone: "",
     },
-    validationSchema: yup.object().shape({
-      fullname: yup.string().required("fullname is required"),
-      email: yup
-        .string()
-        .required("email is required")
-        .email("email is invalid"),
-      password: yup
-        .string()
-        .required("password is required")
-        .min(8, "passwords character minimum length should be 6 "),
-      gender: yup.string().required("gender is required"),
-      phone: yup
-        .string()
-        .required("phone is required")
-        .matches(/^[0-9]+$/, "only numbers are allowed")
-        .min(10, "phone number must be 10 digits only")
-        .max(10, "phone number must be 10 digits only"),
-    }),
+    validationSchema: registerValidationSchema,
     onSubmit: async (values) => {
       try {
         const response = await register(values).unwrap();
