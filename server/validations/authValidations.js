@@ -1,34 +1,34 @@
 const { body, validationResult } = require("express-validator");
+const {
+  fullnameValidation,
+  emailValidation,
+  phoneValidation,
+  genderValidation,
+  passwordFieldValidation,
+  optValidation,
+} = require("./common.validation");
 
-const registerValidation = [
-  body("fullname").trim().notEmpty().withMessage("fullname is required"),
-  body("email")
-    .trim()
-    .notEmpty()
-    .withMessage("email is required")
-    .bail()
-    .isEmail()
-    .withMessage("Email is invalid")
-    .normalizeEmail(),
-  body("phone")
-    .trim()
-    .notEmpty()
-    .withMessage("phone is required")
-    .bail()
-    .matches("/^[0-9]{10}$/")
-    .withMessage("phone must be exactly 10 digits"),
-  body("gender")
-    .notEmpty()
-    .withMessage("gender is required")
-    .bail()
-    .isIn(["male", "female"])
-    .withMessage("gender must be male or female"),
-  body("password")
-    .notEmpty()
-    .withMessage("password is required")
-    .bail()
-    .isLength({ min: 6 })
-    .withMessage("password must be atleast 6 characters"),
+const registerValidations = [
+  fullnameValidation,
+  emailValidation,
+  phoneValidation,
+  genderValidation,
+  passwordFieldValidation("password", "password"),
+];
+const loginValidations = [
+  emailValidation,
+  passwordFieldValidation("password", "password"),
+];
+
+const changePasswordValidations = [
+  passwordFieldValidation("currentPassword", "Current Password"),
+  passwordFieldValidation("newPassword", "New Password"),
+];
+const forgotPasswordValidations = [emailValidation];
+const verifyOtpValidations = [emailValidation, optValidation];
+const resetPasswordValidations = [
+  emailValidation,
+  passwordFieldValidation("password", "password"),
 ];
 
 const validate = (req, res, next) => {
@@ -44,7 +44,14 @@ const validate = (req, res, next) => {
   next();
 };
 
+const validateRequest = (validations) => [...validations, validate];
+
 module.exports = {
-  validate,
-  registerValidation,
+  validateRequest,
+  registerValidations,
+  loginValidations,
+  changePasswordValidations,
+  forgotPasswordValidations,
+  verifyOtpValidations,
+  resetPasswordValidations,
 };

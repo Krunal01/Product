@@ -9,18 +9,40 @@ const {
 } = require("../controllers/auth/authCtrl");
 const { authMiddleware } = require("../middlewares/middleware");
 const {
-  registerValidation,
-  validate,
+  registerValidations,
+  loginValidations,
+  changePasswordValidations,
+  forgotPasswordValidations,
+  verifyOtpValidations,
+  resetPasswordValidations,
+  validateRequest,
 } = require("../validations/authValidations");
 
 const authRouter = express.Router();
 
-authRouter.post("/login", login);
-authRouter.post("/register", registerValidation, validate, register);
-authRouter.post("/forgot-password", forgotPassword);
-authRouter.post("/verify-otp", verifyOTP);
-authRouter.post("/reset-password", resetPassword);
+authRouter.post("/login", validateRequest(loginValidations), login);
+authRouter.post("/register", validateRequest(registerValidations), register);
+authRouter.post(
+  "/forgot-password",
+  validateRequest(forgotPasswordValidations),
+  forgotPassword,
+);
+authRouter.post(
+  "/verify-otp",
+  validateRequest(verifyOtpValidations),
+  verifyOTP,
+);
+authRouter.post(
+  "/reset-password",
+  validateRequest(resetPasswordValidations),
+  resetPassword,
+);
 
-authRouter.post("/change-password", authMiddleware, changePassword);
+authRouter.post(
+  "/change-password",
+  authMiddleware,
+  validateRequest(changePasswordValidations),
+  changePassword,
+);
 
 module.exports = authRouter;

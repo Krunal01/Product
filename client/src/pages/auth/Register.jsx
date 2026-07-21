@@ -51,7 +51,7 @@ const Register = () => {
     <div className="flex justify-center">
       <div className="max-w-115 w-full mt-25 border rounded p-1 border-blue-400">
         <div className="text-2xl my-2 text-center text-blue-400">
-          Login Here
+          Register Here
         </div>
         <form onSubmit={formik.handleSubmit}>
           <div className="p-1">
