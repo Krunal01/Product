@@ -17,23 +17,37 @@ const {
   resetPasswordValidations,
   validateRequest,
 } = require("../validations/authValidations");
+const { authLimiter, protectedLimiter } = require("../limiters/limiter");
 
 const authRouter = express.Router();
 
-authRouter.post("/login", validateRequest(loginValidations), login);
-authRouter.post("/register", validateRequest(registerValidations), register);
+authRouter.post(
+  "/login",
+  authLimiter,
+  validateRequest(loginValidations),
+  login,
+);
+authRouter.post(
+  "/register",
+  authLimiter,
+  validateRequest(registerValidations),
+  register,
+);
 authRouter.post(
   "/forgot-password",
+  authLimiter,
   validateRequest(forgotPasswordValidations),
   forgotPassword,
 );
 authRouter.post(
   "/verify-otp",
+  authLimiter,
   validateRequest(verifyOtpValidations),
   verifyOTP,
 );
 authRouter.post(
   "/reset-password",
+  authLimiter,
   validateRequest(resetPasswordValidations),
   resetPassword,
 );
@@ -41,6 +55,7 @@ authRouter.post(
 authRouter.post(
   "/change-password",
   authMiddleware,
+  protectedLimiter,
   validateRequest(changePasswordValidations),
   changePassword,
 );
