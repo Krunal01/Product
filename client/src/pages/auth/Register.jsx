@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useRegisterMutation } from "../../redux/apis/authApi";
 import { showError } from "../../utils/global";
 import { registerValidationSchema } from "../validations/authValidations";
+import FieldError from "../../components/FieldError";
 const Register = () => {
   const navigate = useNavigate();
   const [register] = useRegisterMutation();
@@ -52,9 +53,10 @@ const Register = () => {
               onBlur={formik.handleBlur}
               value={formik.values.fullname}
             />
-            {formik.touched.fullname && formik.errors.fullname && (
-              <span className="text-red-400">{formik.errors.fullname}</span>
-            )}
+            <FieldError
+              error={formik.errors.fullname}
+              touched={formik.touched.fullname}
+            />
           </div>
           <div className="p-1">
             <label htmlFor="email" className="mb-1 text-gray-600">
@@ -70,9 +72,10 @@ const Register = () => {
               onBlur={formik.handleBlur}
               value={formik.values.email}
             />
-            {formik.touched.email && formik.errors.email && (
-              <span className="text-red-400">{formik.errors.email}</span>
-            )}
+            <FieldError
+              error={formik.errors.email}
+              touched={formik.touched.email}
+            />
           </div>
           <div className="p-1">
             <label htmlFor="phone" className="mb-1 text-gray-600">
@@ -88,9 +91,10 @@ const Register = () => {
               onBlur={formik.handleBlur}
               value={formik.values.phone}
             />
-            {formik.touched.phone && formik.errors.phone && (
-              <span className="text-red-400">{formik.errors.phone}</span>
-            )}
+            <FieldError
+              error={formik.errors.phone}
+              touched={formik.touched.phone}
+            />
           </div>
           <div className="p-1">
             <label htmlFor="gender" className="m-1 text-gray-600">
@@ -122,9 +126,10 @@ const Register = () => {
             <label htmlFor="female" className=" text-gray-600 m-1 ms-0">
               Female
             </label>
-            {formik.touched.gender && formik.errors.gender && (
-              <span className="text-red-400">{formik.errors.gender}</span>
-            )}
+            <FieldError
+              error={formik.errors.gender}
+              touched={formik.touched.gender}
+            />
           </div>
           <div className="p-1">
             <label htmlFor="password" className="mb-1 text-gray-600">
@@ -140,9 +145,10 @@ const Register = () => {
               onBlur={formik.handleBlur}
               value={formik.values.password}
             />
-            {formik.touched.password && formik.errors.password && (
-              <span className="text-red-400">{formik.errors.password}</span>
-            )}
+            <FieldError
+              error={formik.errors.password}
+              touched={formik.touched.password}
+            />
           </div>
           <div className="w-full p-1 mt-2">
             <button

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { setLoginDetails } from "../../redux/slices/authSlice";
 import { showError } from "../../utils/global";
 import { loginValidationSchema } from "../validations/authValidations";
+import FieldError from "../../components/FieldError";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -65,9 +66,10 @@ const Login = () => {
               onBlur={formik.handleBlur}
               value={formik.values.email}
             />
-            {formik.touched.email && formik.errors.email && (
-              <span className="text-red-400">{formik.errors.email}</span>
-            )}
+            <FieldError
+              error={formik.errors.email}
+              touched={formik.touched.email}
+            />
           </div>
           <div className="p-1">
             <label htmlFor="password" className="mb-1 text-gray-600">
@@ -83,9 +85,10 @@ const Login = () => {
               onBlur={formik.handleBlur}
               value={formik.values.password}
             />
-            {formik.touched.password && formik.errors.password && (
-              <span className="text-red-400">{formik.errors.password}</span>
-            )}
+            <FieldError
+              error={formik.errors.password}
+              touched={formik.touched.password}
+            />
           </div>
           <div className="w-full p-1 mt-2">
             <button

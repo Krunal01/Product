@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { showError } from "../../utils/global";
 import { resetPasswordValidationSchema } from "../validations/authValidations";
+import FieldError from "../../components/FieldError";
 const ResetPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -56,9 +57,10 @@ const ResetPassword = () => {
               onBlur={formik.handleBlur}
               value={formik.values.password}
             />
-            {formik.touched.password && formik.errors.password && (
-              <span className="text-red-400">{formik.errors.password}</span>
-            )}
+            <FieldError
+              error={formik.errors.password}
+              touched={formik.touched.password}
+            />
           </div>
           <div className="w-full p-1 mt-2">
             <button

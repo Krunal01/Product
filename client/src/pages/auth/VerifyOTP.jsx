@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { showError } from "../../utils/global";
 import { verifyOTPValidationSchema } from "../validations/authValidations";
+import FieldError from "../../components/FieldError";
 const VerifyOTP = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -47,9 +48,10 @@ const VerifyOTP = () => {
               onBlur={formik.handleBlur}
               value={formik.values.otp}
             />
-            {formik.touched.otp && formik.errors.otp && (
-              <span className="text-red-400">{formik.errors.otp}</span>
-            )}
+            <FieldError
+              error={formik.errors.otp}
+              touched={formik.touched.otp}
+            />
           </div>
           <div className="w-full p-1 mt-2">
             <button

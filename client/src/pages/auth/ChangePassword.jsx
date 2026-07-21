@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { logout, setLoginDetails } from "../../redux/slices/authSlice";
 import { showError } from "../../utils/global";
 import { changePasswordValidationSchema } from "../validations/authValidations";
+import FieldError from "../../components/FieldError";
 const ChangePassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -55,12 +56,10 @@ const ChangePassword = () => {
               onBlur={formik.handleBlur}
               value={formik.values.currentPassword}
             />
-            {formik.touched.currentPassword &&
-              formik.errors.currentPassword && (
-                <span className="text-red-400">
-                  {formik.errors.currentPassword}
-                </span>
-              )}
+            <FieldError
+              error={formik.errors.currentPassword}
+              touched={formik.touched.currentPassword}
+            />
           </div>
           <div className="p-1">
             <label htmlFor="newPassword" className="mb-1 text-gray-600">
@@ -76,9 +75,10 @@ const ChangePassword = () => {
               onBlur={formik.handleBlur}
               value={formik.values.newPassword}
             />
-            {formik.touched.newPassword && formik.errors.newPassword && (
-              <span className="text-red-400">{formik.errors.newPassword}</span>
-            )}
+            <FieldError
+              error={formik.errors.newPassword}
+              touched={formik.touched.newPassword}
+            />
           </div>
           <div className="w-full p-1 mt-2">
             <button

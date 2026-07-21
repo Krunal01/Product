@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { showError } from "../../utils/global";
 import { forgotPasswordValidationSchema } from "../validations/authValidations";
+import FieldError from "../../components/FieldError";
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -51,9 +52,10 @@ const ForgotPassword = () => {
               onBlur={formik.handleBlur}
               value={formik.values.email}
             />
-            {formik.touched.email && formik.errors.email && (
-              <span className="text-red-400">{formik.errors.email}</span>
-            )}
+            <FieldError
+              error={formik.errors.email}
+              touched={formik.touched.email}
+            />
           </div>
           <div className="w-full p-1 mt-2">
             <button
