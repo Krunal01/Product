@@ -9,6 +9,7 @@ import ChangePassword from "./pages/auth/ChangePassword";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import VerifyOTP from "./pages/auth/VerifyOTP";
 import ResetPassword from "./pages/auth/ResetPassword";
+import MyProfile from "./pages/MyProfile";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/change-password" element={<ChangePassword />} />
+            <Route path="/my-profile" element={<MyProfile />} />
           </Route>
         </Routes>
       </BrowserRouter>

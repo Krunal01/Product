@@ -5,14 +5,27 @@ import { handleLogout } from "../utils/global";
 
 const Home = () => {
   const navigate = useNavigate();
+
   return (
     <div>
       Home &nbsp;&nbsp;
-      <button onClick={() => navigate("/change-password")}>
+      <button
+        className="cursor-pointer"
+        onClick={() => navigate("/change-password")}
+      >
         Change Password
       </button>
       &nbsp;&nbsp;
-      <button onClick={() => handleLogout()}>Logout</button>
+      <button
+        className="cursor-pointer"
+        onClick={() => navigate("/my-profile")}
+      >
+        My Profile
+      </button>
+      &nbsp;&nbsp;
+      <button className="cursor-pointer" onClick={() => handleLogout()}>
+        Logout
+      </button>
     </div>
   );
 };
