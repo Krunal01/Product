@@ -17,4 +17,8 @@ const errorResponse = (res, statusCode, message) => {
   });
 };
 
-module.exports = { errorResponse, successResponse };
+const error500 = (error) => {
+  return error?.error || error?.message || "Internal Server Error";
+};
+
+module.exports = { errorResponse, successResponse, error500 };

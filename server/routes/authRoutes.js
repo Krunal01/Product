@@ -18,6 +18,7 @@ const {
   validateRequest,
 } = require("../validations/authValidations");
 const { authLimiter, protectedLimiter } = require("../limiters/limiter");
+const upload = require("../middlewares/upload.middleware");
 
 const authRouter = express.Router();
 
@@ -30,6 +31,7 @@ authRouter.post(
 authRouter.post(
   "/register",
   authLimiter,
+  upload.single("profileImage"),
   validateRequest(registerValidations),
   register,
 );

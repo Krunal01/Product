@@ -1,7 +1,11 @@
 const User = require("../../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { errorResponse, successResponse } = require("../../utils/response");
+const {
+  errorResponse,
+  successResponse,
+  error500,
+} = require("../../utils/response");
 const OTP = require("../../models/OTP");
 const sendMail = require("./sendMail");
 
@@ -34,11 +38,7 @@ const login = async (req, res) => {
       message: "Login Successfull",
     });
   } catch (error) {
-    return errorResponse(
-      res,
-      500,
-      error?.error || error?.message || "Network Error",
-    );
+    return errorResponse(res, 500, error500(error));
   }
 };
 const register = async (req, res) => {
@@ -49,20 +49,20 @@ const register = async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const profileImageUrl = req.file ? req?.file?.path : null;
+    const profileImagePublicId = req?.file ? req?.file?.filename : null;
     const newUser = {
       ...req.body,
       password: hashedPassword,
+      profileImageUrl,
+      profileImagePublicId,
     };
     const response = await User.create(newUser);
     const userObj = response.toObject();
     delete userObj.password;
     return successResponse(res, 201, "user registered successfully", userObj);
   } catch (error) {
-    return errorResponse(
-      res,
-      500,
-      error?.error || error?.message || "Network Error",
-    );
+    return errorResponse(res, 500, error500(error));
   }
 };
 const changePassword = async (req, res) => {
@@ -93,11 +93,7 @@ const changePassword = async (req, res) => {
     await user.save();
     return successResponse(res, 200, "Password changed successfully");
   } catch (error) {
-    return errorResponse(
-      res,
-      500,
-      error?.error || error?.message || "Network Error",
-    );
+    return errorResponse(res, 500, error500(error));
   }
 };
 const forgotPassword = async (req, res) => {
@@ -124,7 +120,7 @@ const forgotPassword = async (req, res) => {
     }
     return successResponse(res, 200, "OTP sent successfully");
   } catch (error) {
-    return errorResponse(res, 500, "internal server error");
+    return errorResponse(res, 500, error500(error));
   }
 };
 const verifyOTP = async (req, res) => {
@@ -145,7 +141,7 @@ const verifyOTP = async (req, res) => {
 
     return successResponse(res, 200, "OTP verified successfully");
   } catch (error) {
-    return errorResponse(res, 500, "internal server error");
+    return errorResponse(res, 500, error500(error));
   }
 };
 const resetPassword = async (req, res) => {
@@ -179,7 +175,7 @@ const resetPassword = async (req, res) => {
 
     return successResponse(res, 200, "password reset successfully");
   } catch (error) {
-    return errorResponse(res, 500, "internal server error");
+    return errorResponse(res, 500, error500(error));
   }
 };
 

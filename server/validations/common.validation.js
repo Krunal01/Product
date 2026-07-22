@@ -34,8 +34,10 @@ const phoneValidation = body("phone")
   .notEmpty()
   .withMessage("phone is required")
   .bail()
-  .isMobilePhone("en-IN")
-  .withMessage("invalid phone");
+  .matches(/^\d{10}$/)
+  .withMessage("Please enter a valid 10-digit Indian mobile number");
+// .isMobilePhone("en-IN")
+// .withMessage("invalid phone");
 
 const optValidation = body("otp")
   .notEmpty()

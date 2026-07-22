@@ -7,6 +7,7 @@ const {
   passwordFieldValidation,
   optValidation,
 } = require("./common.validation");
+const { errorResponse } = require("../utils/response");
 
 const registerValidations = [
   fullnameValidation,
@@ -44,9 +45,18 @@ const validate = (req, res, next) => {
   next();
 };
 
+const validateProfileImage = (req, res, next) => {
+  if (!req.file) {
+    return errorResponse(res, 400, "Profile image is required");
+  }
+
+  next();
+};
+
 const validateRequest = (validations) => [...validations, validate];
 
 module.exports = {
+  validateProfileImage,
   validateRequest,
   registerValidations,
   loginValidations,

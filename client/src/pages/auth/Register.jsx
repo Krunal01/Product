@@ -17,11 +17,21 @@ const Register = () => {
       password: "",
       gender: "",
       phone: "",
+      profileImage: null,
     },
     validationSchema: registerValidationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await register(values).unwrap();
+        const formData = new FormData();
+        formData.append("fullname", values.fullname);
+        formData.append("email", values.email);
+        formData.append("password", values.password);
+        formData.append("gender", values.gender);
+        formData.append("phone", values.phone);
+        if (values.profileImage) {
+          formData.append("profileImage", values.profileImage);
+        }
+        const response = await register(formData).unwrap();
         if (response?.status && response?.statusCode === 201) {
           toast.success("registered successfully");
           navigate("/login");
@@ -149,6 +159,26 @@ const Register = () => {
               error={formik.errors.password}
               touched={formik.touched.password}
             />
+          </div>
+          <div className="p-1">
+            <label htmlFor="profileImage" className="mb-1 text-gray-600">
+              Profile Image
+            </label>
+            <input
+              type="file"
+              name="profileImage"
+              id="profileImage"
+              accept="image/*"
+              className="w-full outline-blue-400 p-1 border rounded"
+              onChange={(e) => {
+                formik.setFieldValue("profileImage", e.currentTarget.files[0]);
+              }}
+            />
+            {formik.values.profileImage && (
+              <p className="text-sm text-gray-500 mt-1">
+                {formik.values.profileImage.name}
+              </p>
+            )}
           </div>
           <div className="w-full p-1 mt-2">
             <button
