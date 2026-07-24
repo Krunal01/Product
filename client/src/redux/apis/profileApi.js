@@ -13,6 +13,13 @@ export const profileApi = createApi({
       }),
       providesTags: ["profile"],
     }),
+    updateProfile: build.mutation({
+      query: (payload) => ({
+        url: "/api/profile/update",
+        method: "PUT",
+        body: payload,
+      }),
+    }),
     saveProfileImage: build.mutation({
       query: (payload) => ({
         url: "api/profile/image",
@@ -33,6 +40,7 @@ export const profileApi = createApi({
 
 export const {
   useMyProfileQuery,
+  useUpdateProfileMutation,
   useSaveProfileImageMutation,
   useDeleteProfileImageMutation,
 } = profileApi;

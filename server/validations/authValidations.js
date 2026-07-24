@@ -1,4 +1,4 @@
-const { body, validationResult } = require("express-validator");
+const { body } = require("express-validator");
 const {
   fullnameValidation,
   emailValidation,
@@ -32,19 +32,6 @@ const resetPasswordValidations = [
   passwordFieldValidation("password", "password"),
 ];
 
-const validate = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      message: "validation failed",
-      status: false,
-      statusCode: 400,
-      errors: errors.array(),
-    });
-  }
-  next();
-};
-
 const validateProfileImage = (req, res, next) => {
   if (!req.file) {
     return errorResponse(res, 400, "Profile image is required");
@@ -53,11 +40,8 @@ const validateProfileImage = (req, res, next) => {
   next();
 };
 
-const validateRequest = (validations) => [...validations, validate];
-
 module.exports = {
   validateProfileImage,
-  validateRequest,
   registerValidations,
   loginValidations,
   changePasswordValidations,

@@ -1,4 +1,4 @@
-const { body } = require("express-validator");
+const { body, validationResult } = require("express-validator");
 
 const fullnameValidation = body("fullname")
   .trim()
@@ -49,6 +49,21 @@ const optValidation = body("otp")
   .isLength({ min: 6, max: 6 })
   .withMessage("OTP must be exactly 6 digits long");
 
+const validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      message: "validation failed",
+      status: false,
+      statusCode: 400,
+      errors: errors.array(),
+    });
+  }
+  next();
+};
+
+const validateRequest = (validations) => [...validations, validate];
+
 module.exports = {
   fullnameValidation,
   emailValidation,
@@ -56,4 +71,6 @@ module.exports = {
   phoneValidation,
   optValidation,
   passwordFieldValidation,
+  validate,
+  validateRequest,
 };

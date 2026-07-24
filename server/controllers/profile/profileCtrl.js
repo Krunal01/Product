@@ -17,6 +17,27 @@ const getMyProfile = async (req, res) => {
     return errorResponse(res, 500, error500(error));
   }
 };
+const updateMyProfile = async (req, res) => {
+  try {
+    const { fullname, gender, phone } = req.body;
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return errorResponse(res, 404, "User not found");
+    }
+
+    user.fullname = fullname;
+    user.gender = gender;
+    user.phone = phone;
+
+    await user.save();
+
+    return successResponse(res, 200, "Profile updated successfully.", user);
+  } catch (error) {
+    return errorResponse(res, 500, error500(error));
+  }
+};
 const saveProfileImage = async (req, res) => {
   try {
     if (!req.file) {
@@ -87,4 +108,9 @@ const deleteProfileImage = async (req, res) => {
   }
 };
 
-module.exports = { getMyProfile, saveProfileImage, deleteProfileImage };
+module.exports = {
+  getMyProfile,
+  updateMyProfile,
+  saveProfileImage,
+  deleteProfileImage,
+};

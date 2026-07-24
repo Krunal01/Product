@@ -1,21 +1,34 @@
 import React from "react";
 import { useFormik } from "formik";
-import { useMyProfileQuery } from "../redux/apis/profileApi";
+import {
+  useMyProfileQuery,
+  useUpdateProfileMutation,
+} from "../redux/apis/profileApi";
+import { showError, successToast } from "../utils/global";
+import { profileUpdateValidationSchema } from "../pages/validations/profileValidations";
+import FieldError from "./FieldError";
 
 const PersonalDetailsCard = ({ user }) => {
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
+  const { refetch } = useMyProfileQuery();
   const formik = useFormik({
     enableReinitialize: true,
-
     initialValues: {
       fullname: user?.fullname || "",
       phone: user?.phone || "",
       gender: user?.gender || "",
     },
-
-    onSubmit: (values) => {
-      console.log(values);
-
-      // update profile api
+    validationSchema: profileUpdateValidationSchema,
+    onSubmit: async (values) => {
+      try {
+        const response = await updateProfile(values).unwrap();
+        if (response?.status && response?.statusCode === 200) {
+          successToast(response?.message);
+          refetch();
+        }
+      } catch (error) {
+        showError(error);
+      }
     },
   });
 
@@ -34,6 +47,7 @@ const PersonalDetailsCard = ({ user }) => {
             value={formik.values.fullname}
             onChange={formik.handleChange}
           />
+          <FieldError error={formik.errors.fullname} />
         </div>
 
         <div className="mb-3">
@@ -46,6 +60,7 @@ const PersonalDetailsCard = ({ user }) => {
             value={formik.values.phone}
             onChange={formik.handleChange}
           />
+          <FieldError error={formik.errors.phone} />
         </div>
 
         <div className="mb-2 flex gap-4 items-center">
@@ -74,13 +89,15 @@ const PersonalDetailsCard = ({ user }) => {
               &nbsp; Female
             </label>
           </div>
+          <FieldError error={formik.errors.gender} />
         </div>
 
         <button
           type="submit"
+          disabled={isLoading}
           className="bg-blue-500 text-white px-5 py-2 rounded cursor-pointer"
         >
-          Update Details
+          {isLoading ? "Updating..." : "Update Details"}
         </button>
       </form>
     </div>

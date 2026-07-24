@@ -15,10 +15,10 @@ const {
   forgotPasswordValidations,
   verifyOtpValidations,
   resetPasswordValidations,
-  validateRequest,
 } = require("../validations/authValidations");
 const { authLimiter, protectedLimiter } = require("../limiters/limiter");
 const upload = require("../middlewares/upload.middleware");
+const { validateRequest } = require("../validations/common.validation");
 
 const authRouter = express.Router();
 

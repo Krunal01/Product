@@ -17,6 +17,13 @@ export const showError = (error = "some error occured") => {
     return toast.error(msg);
   }
 };
+export const successToast = (msg = "success") => {
+  if (typeof msg === "string") {
+    return toast.success(msg);
+  } else {
+    return toast.success(msg?.message || "success");
+  }
+};
 
 export const handleLogout = () => {
   store.dispatch(logout());

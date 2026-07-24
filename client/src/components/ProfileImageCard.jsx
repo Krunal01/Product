@@ -15,7 +15,7 @@ const ProfileImageCard = ({ user }) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      profileImage: user?.profileImageUrl || null,
+      profileImage: null,
     },
     onSubmit: async (values) => {
       const formData = new FormData();
