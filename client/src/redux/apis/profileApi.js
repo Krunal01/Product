@@ -20,6 +20,13 @@ export const profileApi = createApi({
         body: payload,
       }),
     }),
+    changeEmail: build.mutation({
+      query: (payload) => ({
+        url: "/api/profile/update-email",
+        method: "PUT",
+        body: payload,
+      }),
+    }),
     saveProfileImage: build.mutation({
       query: (payload) => ({
         url: "api/profile/image",
@@ -40,6 +47,7 @@ export const profileApi = createApi({
 
 export const {
   useMyProfileQuery,
+  useChangeEmailMutation,
   useUpdateProfileMutation,
   useSaveProfileImageMutation,
   useDeleteProfileImageMutation,

@@ -38,6 +38,41 @@ const updateMyProfile = async (req, res) => {
     return errorResponse(res, 500, error500(error));
   }
 };
+const changeEmail = async (req, res) => {
+  try {
+    const { newEmail } = req.body;
+
+    const user = await User.findById(req.user._id);
+    console.log(user);
+    if (!user) {
+      return errorResponse(res, 404, "User not found");
+    }
+    if (user.email === newEmail) {
+      return errorResponse(
+        res,
+        400,
+        "New email must be different from the current email",
+      );
+    }
+
+    const userExist = await User.findOne({
+      email: newEmail,
+      _id: { $ne: req.user._id },
+    });
+
+    if (userExist) {
+      return errorResponse(res, 409, "Email Already Exist!");
+    }
+
+    user.email = newEmail;
+
+    await user.save();
+
+    return successResponse(res, 200, "Email updated successfully");
+  } catch (error) {
+    return errorResponse(res, 500, error500(error));
+  }
+};
 const saveProfileImage = async (req, res) => {
   try {
     if (!req.file) {
@@ -110,6 +145,7 @@ const deleteProfileImage = async (req, res) => {
 
 module.exports = {
   getMyProfile,
+  changeEmail,
   updateMyProfile,
   saveProfileImage,
   deleteProfileImage,
