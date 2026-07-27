@@ -2,30 +2,22 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { handleLogout } from "../utils/global";
+import Btn from "../components/Btn";
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
     <div>
-      Home &nbsp;&nbsp;
-      <button
-        className="cursor-pointer"
-        onClick={() => navigate("/change-password")}
-      >
-        Change Password
-      </button>
-      &nbsp;&nbsp;
-      <button
-        className="cursor-pointer"
-        onClick={() => navigate("/my-profile")}
-      >
-        My Profile
-      </button>
-      &nbsp;&nbsp;
-      <button className="cursor-pointer" onClick={() => handleLogout()}>
-        Logout
-      </button>
+      <div className="flex gap-1 p-1">
+        Home
+        <Btn
+          title="My Profile"
+          className="bg-sky-400"
+          onClick={() => navigate("/my-profile")}
+        />
+        <Btn title="Logout" onClick={() => handleLogout()} />
+      </div>
     </div>
   );
 };

@@ -4,9 +4,12 @@ import PersonalDetailsCard from "../components/PersonalDetailsCard";
 import ProfileImageCard from "../components/ProfileImageCard";
 import { useMyProfileQuery } from "../redux/apis/profileApi";
 import { showError } from "../utils/global";
+import Btn from "../components/Btn";
+import { useNavigate } from "react-router-dom";
 
 const MyProfile = () => {
   const { data, error } = useMyProfileQuery();
+  const navigate = useNavigate();
 
   const user = data?.data;
 
@@ -17,13 +20,26 @@ const MyProfile = () => {
   }, [error]);
 
   return (
-    <div className="max-w-3xl mx-auto mt-6 space-y-6 mb-2">
-      <ProfileImageCard user={user} />
-      <div className="flex justify-between gap-3">
-        <PersonalDetailsCard user={user} />
-        <ChangeEmailCard user={user} />
+    <>
+      <div className="flex justify-center mt-4">
+        <Btn
+          title="Back"
+          className="mx-1 bg-sky-400"
+          onClick={() => navigate("/")}
+        />
+        <Btn
+          title="Change Password"
+          onClick={() => navigate("/change-password")}
+        />
       </div>
-    </div>
+      <div className="max-w-3xl mx-auto mt-6 space-y-6 mb-2">
+        <ProfileImageCard user={user} />
+        <div className="flex justify-between gap-3">
+          <PersonalDetailsCard user={user} />
+          <ChangeEmailCard user={user} />
+        </div>
+      </div>
+    </>
   );
 };
 

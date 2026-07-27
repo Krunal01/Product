@@ -8,6 +8,8 @@ server/node_modules/
 *.env
 client/.env
 server/.env
+server/comment.js
+comment.js
 
 # Build
 dist/
