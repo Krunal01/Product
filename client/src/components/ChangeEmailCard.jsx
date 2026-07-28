@@ -22,7 +22,7 @@ const ChangeEmailCard = ({ user }) => {
     onSubmit: async (values) => {
       try {
         const response = await changeEmail(values).unwrap();
-        if (response?.status && response?.statusCode === 200) {
+        if (response?.success && response?.statusCode === 200) {
           successToast(response?.message);
           refetch();
         }

@@ -22,7 +22,7 @@ const PersonalDetailsCard = ({ user }) => {
     onSubmit: async (values) => {
       try {
         const response = await updateProfile(values).unwrap();
-        if (response?.status && response?.statusCode === 200) {
+        if (response?.success && response?.statusCode === 200) {
           successToast(response?.message);
           refetch();
         }

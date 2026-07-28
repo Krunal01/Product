@@ -32,7 +32,7 @@ const Register = () => {
           formData.append("profileImage", values.profileImage);
         }
         const response = await register(formData).unwrap();
-        if (response?.status && response?.statusCode === 201) {
+        if (response?.success && response?.statusCode === 201) {
           toast.success("registered successfully");
           navigate("/login");
         }

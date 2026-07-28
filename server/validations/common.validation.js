@@ -53,10 +53,10 @@ const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
-      message: "validation failed",
-      status: false,
-      statusCode: 400,
-      errors: errors.array(),
+      success: false,
+      statusCode: errorCode,
+      error: "BadRequestError",
+      message: "Validation failed",
     });
   }
   next();

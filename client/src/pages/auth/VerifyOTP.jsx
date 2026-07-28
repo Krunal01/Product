@@ -22,7 +22,7 @@ const VerifyOTP = () => {
         const email = JSON.parse(localStorage.getItem("email"));
         const obj = { ...values, email: email.email };
         const response = await verifyOTP(obj).unwrap();
-        if (response?.status && response?.statusCode === 200) {
+        if (response?.success && response?.statusCode === 200) {
           toast.success(response?.message);
           navigate("/reset-password");
         }

@@ -22,7 +22,7 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         const response = await login(values).unwrap();
-        if (response?.status && response?.statusCode === 200) {
+        if (response?.success && response?.statusCode === 200) {
           localStorage.setItem("user", JSON.stringify(response?.data));
           localStorage.setItem("token", JSON.stringify(response?.token));
           dispatch(

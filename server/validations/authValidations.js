@@ -7,7 +7,7 @@ const {
   passwordFieldValidation,
   optValidation,
 } = require("./common.validation");
-const { errorResponse } = require("../utils/response");
+const AppError = require("../utils/AppError");
 
 const registerValidations = [
   fullnameValidation,
@@ -34,7 +34,7 @@ const resetPasswordValidations = [
 
 const validateProfileImage = (req, res, next) => {
   if (!req.file) {
-    return errorResponse(res, 400, "Profile image is required");
+    throw new AppError(400, "Profile image is required");
   }
 
   next();

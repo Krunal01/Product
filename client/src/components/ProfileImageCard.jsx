@@ -22,7 +22,7 @@ const ProfileImageCard = ({ user }) => {
       formData.append("profileImage", values.profileImage);
       try {
         const response = await saveProfileImage(formData).unwrap();
-        if (response?.status && response?.statusCode === 200) {
+        if (response?.success && response?.statusCode === 200) {
           toast.success(response?.message);
           formik.resetForm();
         }
@@ -34,7 +34,7 @@ const ProfileImageCard = ({ user }) => {
   const handleDeleteProfileImage = async () => {
     try {
       const response = await deleteImage().unwrap();
-      if (response?.status && response?.statusCode === 200) {
+      if (response?.success && response?.statusCode === 200) {
         toast.success(response?.message);
       }
     } catch (error) {

@@ -22,7 +22,7 @@ const ChangePassword = () => {
     onSubmit: async (values) => {
       try {
         const response = await changePassword(values).unwrap();
-        if (response?.status && response?.statusCode === 200) {
+        if (response?.success && response?.statusCode === 200) {
           toast.success(response?.message);
           dispatch(logout());
           localStorage.removeItem("token");

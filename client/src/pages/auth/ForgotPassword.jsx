@@ -20,7 +20,7 @@ const ForgotPassword = () => {
     onSubmit: async (values) => {
       try {
         const response = await forgotPassword(values).unwrap();
-        if (response?.status && response?.statusCode === 200) {
+        if (response?.success && response?.statusCode === 200) {
           toast.success(response?.message);
           localStorage.setItem("email", JSON.stringify(values));
           navigate("/verify-otp");
