@@ -2,7 +2,7 @@ const { rateLimit } = require("express-rate-limit");
 
 const rateLimitResponse = {
   message: "Too many requests. try again later!",
-  status: false,
+  success: false,
   statusCode: 429,
 };
 

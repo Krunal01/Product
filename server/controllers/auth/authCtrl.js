@@ -29,7 +29,7 @@ const login = async (req, res) => {
   return res.status(200).json({
     token,
     data: userObj,
-    status: true,
+    success: true,
     statusCode: 200,
     message: "Login Successfull",
   });
