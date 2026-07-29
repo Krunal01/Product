@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const AppError = require("../utils/AppError");
 
 const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -15,4 +16,13 @@ const authMiddleware = async (req, res, next) => {
   req.user = user;
   next();
 };
-module.exports = { authMiddleware };
+const adminMiddleware = async (req, res, next) => {
+  if (!req.user) {
+    throw new AppError(401, "Unauthorized");
+  }
+  if (req.user.role !== "admin") {
+    throw new AppError(403, "Access denied, Admins only.");
+  }
+  next();
+};
+module.exports = { authMiddleware, adminMiddleware };

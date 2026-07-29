@@ -31,3 +31,22 @@ export const handleLogout = () => {
   localStorage.removeItem("user");
   window.location.replace("/login");
 };
+
+export const categories = ["electronics", "fashion", "books", "home", "sports"];
+export const subCategories = {
+  electronics: ["mobilephones", "laptops", "televisions"],
+  fashion: ["men", "women", "shoes"],
+  books: ["physics", "chemestry", "general"],
+  home: ["tubelight", "fan", "freeze"],
+  sports: ["bat", "ball", "stump"],
+};
+export const brands = [
+  "apple",
+  "samsung",
+  "sony",
+  "nike",
+  "adidas",
+  "puma",
+  "lg",
+  "amazon",
+];

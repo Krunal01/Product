@@ -10,6 +10,8 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import VerifyOTP from "./pages/auth/VerifyOTP";
 import ResetPassword from "./pages/auth/ResetPassword";
 import MyProfile from "./pages/MyProfile";
+import AddProduct from "./pages/products/AddProduct";
+import ProductDetail from "./pages/products/ProductDetail";
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/my-profile" element={<MyProfile />} />
+            <Route path="/add-product" element={<AddProduct />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
           </Route>
         </Routes>
       </BrowserRouter>
