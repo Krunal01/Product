@@ -70,13 +70,6 @@ const Home = () => {
       {products.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-lg border">
           <p className="text-gray-500 text-lg">No products found.</p>
-          <div className="mt-4">
-            <Btn
-              title="Add Your First Product"
-              className="bg-green-500 text-white px-4 py-2 rounded"
-              onClick={() => navigate("/add-product")}
-            />
-          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
