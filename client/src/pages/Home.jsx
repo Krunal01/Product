@@ -1,13 +1,19 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { handleLogout } from "../utils/global";
+import { handleLogout, showError, successToast } from "../utils/global";
 import Btn from "../components/Btn";
-import { useGetProductsQuery } from "../redux/apis/productApi";
+import {
+  useDeleteProductMutation,
+  useGetProductsQuery,
+} from "../redux/apis/productApi";
 
 const Home = () => {
   const navigate = useNavigate();
   const { data, isLoading, isError } = useGetProductsQuery();
+  const [deleteProduct, { isLoading: isDeleteLoading }] =
+    useDeleteProductMutation();
+  const user = JSON.parse(localStorage.getItem("user"));
 
   // Safely extract products array from response payload
   const products = data?.data || [];
@@ -45,11 +51,13 @@ const Home = () => {
             className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-1.5 rounded"
             onClick={() => navigate("/my-profile")}
           />
-          <Btn
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded"
-            title="Add Product"
-            onClick={() => navigate("/add-product")}
-          />
+          {user?.role === "admin" && (
+            <Btn
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded"
+              title="Add Product"
+              onClick={() => navigate("/add-product")}
+            />
+          )}
           <Btn
             title="Logout"
             className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded"
@@ -174,11 +182,43 @@ const Home = () => {
 
                     <button
                       onClick={() => navigate(`/product/${product._id}`)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
+                      className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
                     >
                       View
                     </button>
                   </div>
+                  {user?.role === "admin" && (
+                    <div className="flex justify-end gap-1">
+                      <button
+                        onClick={() => navigate(`/add-product/${product._id}`)}
+                        className="cursor-pointer bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={async () => {
+                          try {
+                            const response = await deleteProduct(
+                              product._id,
+                            ).unwrap();
+                            if (
+                              response?.success &&
+                              response?.statusCode === 200
+                            ) {
+                              console.log(response);
+                              successToast(response?.message);
+                            }
+                          } catch (error) {
+                            showError(error);
+                          }
+                        }}
+                        disabled={isDeleteLoading}
+                        className="cursor-pointer bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
+                      >
+                        {isDeleteLoading ? "Deleting..." : "Delete"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             );

@@ -1,7 +1,7 @@
 import React from "react";
 import { FieldArray, useFormik } from "formik";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import {
@@ -13,44 +13,87 @@ import {
 } from "../../utils/global";
 import FieldError from "../../components/FieldError";
 import Btn from "../../components/Btn";
-import { useAddProductMutation } from "../../redux/apis/productApi";
+import {
+  useAddProductMutation,
+  useEditProductMutation,
+  useGetProductByIdQuery,
+} from "../../redux/apis/productApi";
 const AddProduct = () => {
+  const { id } = useParams();
+  const isEditMode = !!id;
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [addProduct] = useAddProductMutation();
+  const [addProduct, { isLoading }] = useAddProductMutation();
+  const [updateProduct, { isLoading: isEditLoading }] =
+    useEditProductMutation();
+  const { data } = useGetProductByIdQuery(id, { skip: !isEditMode });
+  const product = data?.data;
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      name: "",
-      price: "",
-      discountPrice: "",
-      currency: "INR",
+      name: product?.name || "",
+      price: product?.price || "",
+      discountPrice: product?.discountPrice || "",
+      currency: product?.currency || "INR",
 
-      description: "",
-      shortDescription: "",
+      description: product?.description || "",
+      shortDescription: product?.shortDescription || "",
 
-      category: "",
-      subCategory: "",
-      brand: "",
+      category: product?.category || "",
+      subCategory: product?.subCategory || "",
+      brand: product?.brand || "",
 
       productImage: null,
 
-      specifications: [
+      specifications: product?.specifications || [
         {
           key: "",
           value: "",
         },
       ],
 
-      features: [""],
+      features: product?.features || [""],
 
-      tags: [""],
+      tags: product?.tags || [""],
     },
     onSubmit: async (values) => {
       try {
-        const obj = { ...values };
-        obj.createdBy = JSON.parse(localStorage.getItem("user"))?._id;
-        console.log(obj);
-        const response = await addProduct(obj).unwrap();
+        const formData = new FormData();
+
+        formData.append("name", values.name);
+        formData.append("price", values.price);
+        formData.append("discountPrice", values.discountPrice || "");
+        formData.append("currency", values.currency);
+        formData.append("description", values.description);
+        formData.append("shortDescription", values.shortDescription || "");
+        formData.append("category", values.category);
+        formData.append("subCategory", values.subCategory || "");
+        formData.append("brand", values.brand || "");
+
+        const userId = JSON.parse(localStorage.getItem("user"))?._id;
+        formData.append("createdBy", userId);
+
+        if (isEditMode) {
+          formData.append("_id", id);
+        }
+
+        formData.append("features", JSON.stringify(values.features));
+        formData.append("tags", JSON.stringify(values.tags));
+        formData.append(
+          "specifications",
+          JSON.stringify(values.specifications),
+        );
+
+        if (values.productImage) {
+          formData.append("productImage", values.productImage);
+        }
+
+        let response;
+        if (isEditMode) {
+          response = await updateProduct(formData).unwrap();
+        } else {
+          response = await addProduct(formData).unwrap();
+        }
         console.log(response);
         if (response?.success && response?.statusCode === 200) {
           successToast(response?.message);
@@ -66,7 +109,7 @@ const AddProduct = () => {
     <div className="flex justify-center">
       <div className="max-w-115 w-full mt-25 border rounded p-1 border-blue-400">
         <div className="text-2xl my-2 text-center text-blue-400">
-          Add Product Here
+          {isEditMode ? "Update" : "Add"} Product Here
         </div>
         <Btn title="Home" onClick={() => navigate("/")} />
         <form onSubmit={formik.handleSubmit}>
@@ -490,9 +533,15 @@ const AddProduct = () => {
             <button
               type="submit"
               className="text-white w-full bg-blue-400 p-1 rounded cursor-pointer"
-              disabled={false}
+              disabled={isLoading || isEditLoading}
             >
-              Submit
+              {isEditMode
+                ? isEditLoading
+                  ? "Updating..."
+                  : "Update"
+                : isLoading
+                  ? "Submitting..."
+                  : "Submit"}
             </button>
           </div>
         </form>

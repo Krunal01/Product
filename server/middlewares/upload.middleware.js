@@ -4,16 +4,21 @@ const v2 = require("../config/cloudinary");
 
 const storage = new CloudinaryStorage({
   cloudinary: v2,
-  params: {
-    folder: "product-users/profile-images",
-    allowed_formats: ["jpg", "jpeg", "png", "webp"],
-    transformation: [
-      {
-        height: 400,
-        width: 400,
-        crop: "fill",
-      },
-    ],
+  params: async (req, file) => {
+    let folderName = req.originalUrl.includes("profile")
+      ? "product-users/profile-images"
+      : "product-users/product-images";
+    return {
+      folder: folderName,
+      allowed_formats: ["jpg", "jpeg", "png", "webp"],
+      transformation: [
+        {
+          height: 400,
+          width: 400,
+          crop: "fill",
+        },
+      ],
+    };
   },
 });
 

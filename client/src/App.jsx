@@ -28,6 +28,7 @@ function App() {
             <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/my-profile" element={<MyProfile />} />
             <Route path="/add-product" element={<AddProduct />} />
+            <Route path="/add-product/:id" element={<AddProduct />} />
             <Route path="/product/:id" element={<ProductDetail />} />
           </Route>
         </Routes>

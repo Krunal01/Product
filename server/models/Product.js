@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const ProductSchema = new mongoose.Schema(
   {
@@ -21,11 +22,17 @@ const ProductSchema = new mongoose.Schema(
     },
     discountPrice: {
       type: Number,
-      min: 0,
+      min: [0, "product discount price cannot be negative"],
       default: null,
       validate: {
         validator: function (value) {
-          return value == null || value <= this.price;
+          if (this instanceof mongoose.Query) {
+            const update = this.getUpdate();
+            if (update.price !== undefined) {
+              return value <= update.price;
+            }
+          }
+          return true;
         },
         message: "Discount price cannot be greater than the original price",
       },
@@ -96,6 +103,15 @@ const ProductSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+ProductSchema.pre("save", async function (next) {
+  if (!this.isModified("name")) {
+    return;
+  }
+  let generatedSlug = slugify(this.name, { lower: true, strict: true });
+  const randomSuffix = Math.random().toString(36).substring(2, 6);
+  this.slug = `${generatedSlug}-${randomSuffix}`;
+});
 
 const Product = mongoose.model("Product", ProductSchema);
 module.exports = Product;

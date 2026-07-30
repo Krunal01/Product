@@ -34,7 +34,7 @@ export const handleLogout = () => {
 
 export const categories = ["electronics", "fashion", "books", "home", "sports"];
 export const subCategories = {
-  electronics: ["mobilephones", "laptops", "televisions"],
+  electronics: ["mobilephones", "laptops", "televisions", "ac"],
   fashion: ["men", "women", "shoes"],
   books: ["physics", "chemestry", "general"],
   home: ["tubelight", "fan", "freeze"],
