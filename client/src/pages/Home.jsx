@@ -7,16 +7,29 @@ import {
   useDeleteProductMutation,
   useGetProductsQuery,
 } from "../redux/apis/productApi";
+import {
+  useAddToCartMutation,
+  useGetCartItemsQuery,
+  useRemoveFromCartMutation,
+  useUpdateQuantityMutation,
+} from "../redux/apis/cartApi";
 
 const Home = () => {
   const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState(null);
-  const { data, isLoading, isError } = useGetProductsQuery();
-  const [deleteProduct, { isLoading: isDeleteLoading }] =
-    useDeleteProductMutation();
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // Safely extract products array from response payload
+  const { data, isLoading, isError } = useGetProductsQuery();
+  const { data: cartData, isLoading: isGetCartLoading } =
+    useGetCartItemsQuery();
+  const [deleteProduct, { isLoading: isDeleteLoading }] =
+    useDeleteProductMutation();
+  const [addToCart, { isLoading: isCartAddLoading }] = useAddToCartMutation();
+  const [removeFromCart, { isLoading: isCartRemoveLoading }] =
+    useRemoveFromCartMutation();
+  const [updateQuantity, { isLoading: isCartUpdateLoading }] =
+    useUpdateQuantityMutation();
+
   const products = data?.data || [];
 
   if (isLoading) {
@@ -75,6 +88,10 @@ const Home = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => {
+            const cartItem = cartData?.data?.find(
+              (item) => item.productId === product._id,
+            );
+            const quantity = cartItem?.quantity || 0;
             const finalPrice = product.discountPrice
               ? product.price - product.discountPrice
               : product.price;
@@ -174,12 +191,107 @@ const Home = () => {
                       )}
                     </div>
 
-                    <button
-                      onClick={() => navigate(`/product/${product._id}`)}
-                      className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
-                    >
-                      View
-                    </button>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => navigate(`/product/${product._id}`)}
+                        className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
+                      >
+                        View
+                      </button>
+                      {quantity === 0 ? (
+                        <button
+                          onClick={async () => {
+                            try {
+                              const response = await addToCart({
+                                productId: product._id,
+                                quantity: 1,
+                              }).unwrap();
+                              if (
+                                response?.success &&
+                                response?.statusCode === 201
+                              ) {
+                                successToast("added to cart");
+                              }
+                            } catch (error) {
+                              showError(error);
+                            }
+                          }}
+                          disabled={isGetCartLoading || isCartAddLoading}
+                          className="cursor-pointer bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
+                        >
+                          {isCartAddLoading ? "Adding..." : "Add to Cart"}
+                        </button>
+                      ) : (
+                        <div className="flex gap-0.5">
+                          <button
+                            onClick={async () => {
+                              try {
+                                const response = await updateQuantity({
+                                  quantity: quantity - 1,
+                                  productId: product._id,
+                                }).unwrap();
+                                if (
+                                  response?.success &&
+                                  response?.statusCode === 200
+                                ) {
+                                }
+                              } catch (error) {
+                                showError(error);
+                              }
+                            }}
+                            disabled={isCartUpdateLoading}
+                            className="cursor-pointer bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
+                          >
+                            -
+                          </button>
+                          <button
+                            onClick={async () => {
+                              try {
+                                const response = await removeFromCart(
+                                  cartItem?._id,
+                                ).unwrap();
+                                if (
+                                  response?.success &&
+                                  response?.statusCode === 200
+                                ) {
+                                  successToast("Remove from cart");
+                                }
+                              } catch (error) {
+                                showError(error);
+                              }
+                            }}
+                            disabled={isCartRemoveLoading}
+                            className="cursor-pointer bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
+                          >
+                            {isCartRemoveLoading
+                              ? "Removing..."
+                              : "Remove from Cart"}
+                          </button>
+                          <button
+                            onClick={async () => {
+                              try {
+                                const response = await updateQuantity({
+                                  quantity: quantity + 1,
+                                  productId: product._id,
+                                }).unwrap();
+                                if (
+                                  response?.success &&
+                                  response?.statusCode === 200
+                                ) {
+                                  refetch();
+                                }
+                              } catch (error) {
+                                showError(error);
+                              }
+                            }}
+                            disabled={isCartUpdateLoading}
+                            className="cursor-pointer bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
+                          >
+                            +
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   {user?.role === "admin" && (
                     <div className="flex justify-end gap-1">
