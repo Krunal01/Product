@@ -100,6 +100,10 @@ const ProductSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    embeddings: {
+      type: [Number],
+      default: [],
+    },
   },
   { timestamps: true },
 );

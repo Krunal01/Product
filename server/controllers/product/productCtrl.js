@@ -2,14 +2,15 @@ const { v2 } = require("cloudinary");
 const Product = require("../../models/Product");
 const AppError = require("../../utils/AppError");
 const { successResponse } = require("../../utils/response");
+const { generateEmbeddings } = require("../../utils/embedding");
 
 const getProducts = async (req, res) => {
-  const products = await Product.find().lean();
+  const products = await Product.find().select("-embeddings").lean();
   return successResponse(res, 200, "Products Data Fetched", products);
 };
 
 const getProductById = async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  const product = await Product.findById(req.params.id).select("-embeddings");
   if (!product) {
     throw new AppError(404, "Product not found");
   }
@@ -31,6 +32,21 @@ const addProduct = async (req, res) => {
     req.body.productImageUrl = null;
     req.body.productImagePublicId = null;
   }
+
+  const { name, category, brand, description, shortDescription } = req.body;
+
+  const embeddingText = `
+    Name: ${name}
+    Category: ${category}
+    Brand: ${brand}
+    Description: ${description}
+    shortDescription: ${shortDescription}
+    Features: ${req?.body?.features?.join(", ")}
+    Tags: ${req?.body?.tags?.join(", ")}
+  `;
+
+  req.body.embeddings = await generateEmbeddings(embeddingText);
+
   const newProduct = await Product.create(req.body);
   return successResponse(
     res,
@@ -65,6 +81,20 @@ const updateProduct = async (req, res) => {
     req.body.productImageUrl = req.file.path;
     req.body.productImagePublicId = req.file.filename;
   }
+  const { name, category, brand, description, shortDescription } = req.body;
+
+  const embeddingText = `
+    Name: ${name}
+    Category: ${category}
+    Brand: ${brand}
+    Description: ${description}
+    shortDescription: ${shortDescription}
+    Features: ${req?.body?.features?.join(", ")}
+    Tags: ${req?.body?.tags?.join(", ")}
+  `;
+
+  req.body.embeddings = await generateEmbeddings(embeddingText);
+
   const product = await Product.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
@@ -73,7 +103,7 @@ const updateProduct = async (req, res) => {
 };
 const deleteProduct = async (req, res) => {
   const { id } = req.params;
-  const currentProduct = await Product.findById(id);
+  const currentProduct = await Product.findById(id).select("-embeddings");
   if (!currentProduct) {
     throw new AppError(404, "Product not found");
   }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { handleLogout, showError, successToast } from "../utils/global";
@@ -10,6 +10,7 @@ import {
 
 const Home = () => {
   const navigate = useNavigate();
+  const [deletingId, setDeletingId] = useState(null);
   const { data, isLoading, isError } = useGetProductsQuery();
   const [deleteProduct, { isLoading: isDeleteLoading }] =
     useDeleteProductMutation();
@@ -191,6 +192,7 @@ const Home = () => {
                       <button
                         onClick={async () => {
                           try {
+                            setDeletingId(product._id);
                             const response = await deleteProduct(
                               product._id,
                             ).unwrap();
@@ -198,17 +200,18 @@ const Home = () => {
                               response?.success &&
                               response?.statusCode === 200
                             ) {
-                              console.log(response);
                               successToast(response?.message);
                             }
                           } catch (error) {
                             showError(error);
+                          } finally {
+                            setDeletingId(null);
                           }
                         }}
-                        disabled={isDeleteLoading}
+                        disabled={deletingId === product._id}
                         className="cursor-pointer bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
                       >
-                        {isDeleteLoading ? "Deleting..." : "Delete"}
+                        {deletingId === product._id ? "Deleting..." : "Delete"}
                       </button>
                     </div>
                   )}
