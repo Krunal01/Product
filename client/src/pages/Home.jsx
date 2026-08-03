@@ -13,6 +13,7 @@ import {
   useRemoveFromCartMutation,
   useUpdateQuantityMutation,
 } from "../redux/apis/cartApi";
+import Chatbot from "../components/Chatbot";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ const Home = () => {
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
       {/* Header Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-lg shadow-sm border mb-6">
+        <Chatbot />
         <h1 className="text-2xl font-bold text-gray-800">Product Dashboard</h1>
 
         <div className="flex flex-wrap items-center gap-2">

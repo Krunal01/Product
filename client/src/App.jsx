@@ -13,7 +13,6 @@ import MyProfile from "./pages/MyProfile";
 import AddProduct from "./pages/products/AddProduct";
 import ProductDetail from "./pages/products/ProductDetail";
 import AdminRoute from "./components/AdminRoute";
-import Chatbot from "./components/Chatbot";
 import Checkout from "./pages/Checkout";
 import Cart from "./pages/Cart";
 import CartValidateRoute from "./components/CartValidateRoute";
@@ -21,7 +20,6 @@ import CartValidateRoute from "./components/CartValidateRoute";
 function App() {
   return (
     <div>
-      <Chatbot />
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
