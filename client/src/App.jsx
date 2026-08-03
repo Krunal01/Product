@@ -16,6 +16,7 @@ import AdminRoute from "./components/AdminRoute";
 import Checkout from "./pages/Checkout";
 import Cart from "./pages/Cart";
 import CartValidateRoute from "./components/CartValidateRoute";
+import Order from "./components/Order";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             </Route>
             <Route element={<CartValidateRoute />}>
               <Route path="/cart" element={<Cart />} />
+              <Route path="/order" element={<Order />} />
               <Route path="/checkout" element={<Checkout />} />
             </Route>
             <Route path="/product/:id" element={<ProductDetail />} />

@@ -6,11 +6,24 @@ const connectDB = require("./config/db");
 const router = require("./routes");
 const { errorHandler } = require("./middlewares/error.middleware");
 
+const allowedOrigins = ["http://localhost:5173", process.env.CLIENT_URL];
+
 const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(cors());
+app.use(
+  cors({
+    origin: function (origin, cb) {
+      if (!origin) return cb(null, true);
+      if (allowedOrigins?.includes(origin)) {
+        return cb(null, true);
+      }
+      return cb(new Error("Not allowed By CORS"));
+    },
+    credentials: true,
+  }),
+);
 app.use("/api", router);
 app.use(errorHandler);
 
