@@ -4,6 +4,7 @@ import { baseApi } from "../baseApi";
 export const cartApi = createApi({
   reducerPath: "cartApi",
   baseQuery: baseApi,
+  tagTypes: ["cart"],
   endpoints: (builder) => ({
     getCartItems: builder.query({
       query: () => ({
@@ -29,14 +30,13 @@ export const cartApi = createApi({
     }),
     updateQuantity: builder.mutation({
       query: (payload) => ({
-        url: `/api/cart/${payload?._id}`,
+        url: `/api/cart/${payload?.productId}`,
         method: "PUT",
         body: payload,
       }),
       invalidatesTags: ["cart"],
     }),
   }),
-  tagTypes: ["cart"],
 });
 
 export const {

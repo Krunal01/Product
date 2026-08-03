@@ -17,6 +17,8 @@ import {
 const Home = () => {
   const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState(null);
+  const [addCartId, setAddCartId] = useState(null);
+  const [removeCartId, setRemoveCartId] = useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
 
   const { data, isLoading, isError } = useGetProductsQuery();
@@ -70,6 +72,13 @@ const Home = () => {
               className="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded"
               title="Add Product"
               onClick={() => navigate("/add-product")}
+            />
+          )}
+          {cartData?.data?.length !== 0 && (
+            <Btn
+              title="Cart Page"
+              className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-4 py-1.5 rounded"
+              onClick={() => navigate("/cart")}
             />
           )}
           <Btn
@@ -202,6 +211,7 @@ const Home = () => {
                         <button
                           onClick={async () => {
                             try {
+                              setAddCartId(product._id);
                               const response = await addToCart({
                                 productId: product._id,
                                 quantity: 1,
@@ -214,12 +224,16 @@ const Home = () => {
                               }
                             } catch (error) {
                               showError(error);
+                            } finally {
+                              setAddCartId(null);
                             }
                           }}
                           disabled={isGetCartLoading || isCartAddLoading}
                           className="cursor-pointer bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
                         >
-                          {isCartAddLoading ? "Adding..." : "Add to Cart"}
+                          {addCartId === product._id
+                            ? "Adding..."
+                            : "Add to Cart"}
                         </button>
                       ) : (
                         <div className="flex gap-0.5">
@@ -230,11 +244,25 @@ const Home = () => {
                                   quantity: quantity - 1,
                                   productId: product._id,
                                 }).unwrap();
-                                if (
-                                  response?.success &&
-                                  response?.statusCode === 200
-                                ) {
-                                }
+                              } catch (error) {
+                                showError(error);
+                              }
+                            }}
+                            disabled={isCartUpdateLoading || quantity === 1}
+                            className="cursor-pointer bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
+                          >
+                            -
+                          </button>
+                          <button className="cursor-pointer bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-3 py-1.5 rounded transition">
+                            {quantity}
+                          </button>
+                          <button
+                            onClick={async () => {
+                              try {
+                                const response = await updateQuantity({
+                                  quantity: quantity + 1,
+                                  productId: product._id,
+                                }).unwrap();
                               } catch (error) {
                                 showError(error);
                               }
@@ -242,11 +270,13 @@ const Home = () => {
                             disabled={isCartUpdateLoading}
                             className="cursor-pointer bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
                           >
-                            -
+                            +
                           </button>
+
                           <button
                             onClick={async () => {
                               try {
+                                setRemoveCartId(cartItem?._id);
                                 const response = await removeFromCart(
                                   cartItem?._id,
                                 ).unwrap();
@@ -258,36 +288,16 @@ const Home = () => {
                                 }
                               } catch (error) {
                                 showError(error);
+                              } finally {
+                                setRemoveCartId(null);
                               }
                             }}
                             disabled={isCartRemoveLoading}
                             className="cursor-pointer bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
                           >
-                            {isCartRemoveLoading
+                            {cartItem?._id === removeCartId
                               ? "Removing..."
                               : "Remove from Cart"}
-                          </button>
-                          <button
-                            onClick={async () => {
-                              try {
-                                const response = await updateQuantity({
-                                  quantity: quantity + 1,
-                                  productId: product._id,
-                                }).unwrap();
-                                if (
-                                  response?.success &&
-                                  response?.statusCode === 200
-                                ) {
-                                  refetch();
-                                }
-                              } catch (error) {
-                                showError(error);
-                              }
-                            }}
-                            disabled={isCartUpdateLoading}
-                            className="cursor-pointer bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-3 py-1.5 rounded transition"
-                          >
-                            +
                           </button>
                         </div>
                       )}

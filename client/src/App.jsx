@@ -14,6 +14,9 @@ import AddProduct from "./pages/products/AddProduct";
 import ProductDetail from "./pages/products/ProductDetail";
 import AdminRoute from "./components/AdminRoute";
 import Chatbot from "./components/Chatbot";
+import Checkout from "./pages/Checkout";
+import Cart from "./pages/Cart";
+import CartValidateRoute from "./components/CartValidateRoute";
 
 function App() {
   return (
@@ -33,6 +36,10 @@ function App() {
             <Route element={<AdminRoute />}>
               <Route path="/add-product" element={<AddProduct />} />
               <Route path="/add-product/:id" element={<AddProduct />} />
+            </Route>
+            <Route element={<CartValidateRoute />}>
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
             </Route>
             <Route path="/product/:id" element={<ProductDetail />} />
           </Route>

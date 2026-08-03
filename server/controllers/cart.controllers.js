@@ -29,5 +29,20 @@ const removeFromCart = async (req, res) => {
   const result = await Cart.findByIdAndDelete(req.params.id);
   return successResponse(res, 200, "remove from cart items");
 };
+const updateQuantity = async (req, res) => {
+  const cartItem = await Cart.findOne({
+    productId: req.body.productId,
+    userId: req.user._id,
+  });
+  if (!cartItem) {
+    throw new AppError(404, "Cart Item not found");
+  }
 
-module.exports = { getCartItems, addToCart, removeFromCart };
+  cartItem.quantity = req.body.quantity;
+
+  await cartItem.save();
+
+  return successResponse(res, 200, "quantity updated", cartItem);
+};
+
+module.exports = { getCartItems, addToCart, removeFromCart, updateQuantity };
