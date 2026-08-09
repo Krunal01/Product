@@ -1,10 +1,10 @@
 const express = require("express");
-const authRouter = require("./authRoutes");
-const profileRoutes = require("./profileRoutes");
-const { authMiddleware } = require("../middlewares/middleware");
-const productRoutes = require("./productRoutes");
-const aiRouter = require("./chatRoutes");
 const cartRoute = require("./cart.route");
+const aiRouter = require("./chat.route");
+const authRouter = require("./auth.route");
+const profileRoutes = require("./profile.route");
+const productRoutes = require("./product.route");
+const { authMiddleware } = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 

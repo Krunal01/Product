@@ -1,7 +1,7 @@
 const { v2 } = require("cloudinary");
-const User = require("../../models/User");
-const { successResponse } = require("../../utils/response");
-const AppError = require("../../utils/AppError");
+const User = require("../models/User");
+const { successResponse } = require("../utils/response");
+const AppError = require("../utils/AppError");
 
 const getMyProfile = async (req, res) => {
   const myData = await User.findById(req.user._id).lean();

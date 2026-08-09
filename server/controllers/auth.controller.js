@@ -1,10 +1,10 @@
-const User = require("../../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { successResponse } = require("../../utils/response");
-const OTP = require("../../models/OTP");
-const sendMail = require("./sendMail");
-const AppError = require("../../utils/AppError");
+const OTP = require("../models/OTP");
+const User = require("../models/User");
+const { successResponse } = require("../utils/response");
+const AppError = require("../utils/AppError");
+const sendMail = require("./sendMail.controller");
 
 const login = async (req, res) => {
   const user = await User.findOne({ email: req.body.email }).select(

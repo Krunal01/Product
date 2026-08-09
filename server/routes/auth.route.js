@@ -6,8 +6,7 @@ const {
   forgotPassword,
   verifyOTP,
   resetPassword,
-} = require("../controllers/auth/authCtrl");
-const { authMiddleware } = require("../middlewares/middleware");
+} = require("../controllers/auth.controller");
 const {
   registerValidations,
   loginValidations,
@@ -15,10 +14,11 @@ const {
   forgotPasswordValidations,
   verifyOtpValidations,
   resetPasswordValidations,
-} = require("../validations/authValidations");
+} = require("../validations/auth.validation");
 const { authLimiter, protectedLimiter } = require("../limiters/limiter");
 const upload = require("../middlewares/upload.middleware");
 const { validateRequest } = require("../validations/common.validation");
+const { authMiddleware } = require("../middlewares/auth.middleware");
 
 const authRouter = express.Router();
 

@@ -1,8 +1,8 @@
 const { v2 } = require("cloudinary");
-const Product = require("../../models/Product");
-const AppError = require("../../utils/AppError");
-const { successResponse } = require("../../utils/response");
-const { generateEmbeddings } = require("../../utils/embedding");
+const Product = require("../models/Product");
+const AppError = require("../utils/AppError");
+const { successResponse } = require("../utils/response");
+const { generateEmbeddings } = require("../utils/embedding");
 
 const getProducts = async (req, res) => {
   const products = await Product.find().select("-embeddings").lean();
@@ -33,10 +33,12 @@ const addProduct = async (req, res) => {
     req.body.productImagePublicId = null;
   }
 
-  const { name, category, brand, description, shortDescription } = req.body;
+  const { name, category, brand, description, shortDescription, price } =
+    req.body;
 
   const embeddingText = `
     Name: ${name}
+    Price: ${price}
     Category: ${category}
     Brand: ${brand}
     Description: ${description}
@@ -81,10 +83,12 @@ const updateProduct = async (req, res) => {
     req.body.productImageUrl = req.file.path;
     req.body.productImagePublicId = req.file.filename;
   }
-  const { name, category, brand, description, shortDescription } = req.body;
+  const { name, category, brand, description, shortDescription, price } =
+    req.body;
 
   const embeddingText = `
     Name: ${name}
+    Price: ${price}
     Category: ${category}
     Brand: ${brand}
     Description: ${description}

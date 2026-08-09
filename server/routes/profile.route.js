@@ -5,13 +5,13 @@ const {
   deleteProfileImage,
   updateMyProfile,
   changeEmail,
-} = require("../controllers/profile/profileCtrl");
+} = require("../controllers/profile.controller");
 const upload = require("../middlewares/upload.middleware");
 const { validateRequest } = require("../validations/common.validation");
 const {
   profileUpdateValidation,
   changeEmailValidation,
-} = require("../validations/profileValidations");
+} = require("../validations/profile.validation");
 const profileRoutes = express.Router();
 
 profileRoutes.get("/", getMyProfile);

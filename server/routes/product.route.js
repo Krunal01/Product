@@ -5,9 +5,9 @@ const {
   getProductById,
   updateProduct,
   deleteProduct,
-} = require("../controllers/product/productCtrl");
-const { adminMiddleware } = require("../middlewares/middleware");
+} = require("../controllers/product.controller");
 const upload = require("../middlewares/upload.middleware");
+const { adminMiddleware } = require("../middlewares/auth.middleware");
 const productRoutes = express.Router();
 
 productRoutes.get("/", getProducts);

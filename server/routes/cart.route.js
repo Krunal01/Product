@@ -4,7 +4,7 @@ const {
   addToCart,
   removeFromCart,
   updateQuantity,
-} = require("../controllers/cart.controllers");
+} = require("../controllers/cart.controller");
 const cartRoute = express.Router();
 
 cartRoute.get("/", getCartItems);
