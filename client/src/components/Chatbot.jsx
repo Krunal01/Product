@@ -21,10 +21,12 @@ const Chatbot = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:8000/api/ai/chat", {
-        userMessage: userText,
-      });
-      console.log(response);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/ai/chat`,
+        {
+          userMessage: userText,
+        },
+      );
       setMessages((prev) => [
         ...prev,
         { sender: "ai", text: response?.data?.data },
